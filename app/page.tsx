@@ -79,11 +79,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="px-6 py-8 text-center text-xs text-muted-foreground border-t border-border bg-background/50">
-        <p>© 2025 Estacionamento Fittipaldi. Todos os direitos reservados.</p>
-      </footer>
     </main>
   )
 }
