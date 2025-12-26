@@ -16,28 +16,23 @@ interface Item {
 
 const pasteis: Item[] = [
   { id: "p1", nome: "Carne", preco: 8.0 },
-  { id: "p2", nome: "Frango", preco: 8.0 },
-  { id: "p3", nome: "Queijo", preco: 7.0 },
-  { id: "p4", nome: "Pizza", preco: 9.0 },
-  { id: "p5", nome: "Calabresa", preco: 9.0 },
-  { id: "p6", nome: "Palmito", preco: 10.0 },
-  { id: "p7", nome: "Camarão", preco: 12.0 },
-  { id: "p8", nome: "Romeu e Julieta", preco: 8.0 },
+  { id: "p3", nome: "Queijo", preco: 10.0 },
+  { id: "p4", nome: "Carne e Queijo", preco: 10.0 },
+  { id: "p5", nome: "Queijo e Presunto", preco: 10.0},
+  { id: "p6", nome: "Chocolate Preto", preco: 10.0 },
+  { id: "p7", nome: "Chocolate Branco", preco: 10.0 },
+  { id: "p8", nome: "Chocolate Misto", preco: 10.0 },
 ]
 
 const hamburgueres: Item[] = [
-  { id: "h1", nome: "X-Burger", preco: 15.0 },
-  { id: "h2", nome: "X-Bacon", preco: 17.0 },
-  { id: "h3", nome: "X-Egg", preco: 16.0 },
-  { id: "h4", nome: "X-Tudo", preco: 20.0 },
-  { id: "h5", nome: "X-Frango", preco: 15.0 },
+  { id: "h1", nome: "X-Burger", preco: 16.0 },
+  { id: "h2", nome: "X-Especial", preco: 16.0 },
+
 ]
 
 const xis: Item[] = [
-  { id: "x1", nome: "X-Salada", preco: 18.0 },
-  { id: "x2", nome: "X-Calabresa", preco: 19.0 },
-  { id: "x3", nome: "X-Picanha", preco: 25.0 },
-  { id: "x4", nome: "X-Coração", preco: 22.0 },
+  { id: "h1", nome: "X-Burger", preco: 16.0 },
+  { id: "h2", nome: "X-Especial", preco: 16.0 },
 ]
 
 const torradas: Item[] = [
@@ -48,20 +43,12 @@ const torradas: Item[] = [
 ]
 
 const paesDeQueijo: Item[] = [
-  { id: "pq1", nome: "Pão de Queijo (unidade)", preco: 3.0 },
-  { id: "pq2", nome: "Pão de Queijo Recheado (carne)", preco: 8.0 },
-  { id: "pq3", nome: "Pão de Queijo Recheado (frango)", preco: 8.0 },
-  { id: "pq4", nome: "Pão de Queijo Recheado (catupiry)", preco: 7.0 },
+  { id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 },
 ]
 
 const bebidas: Item[] = [
-  { id: "b1", nome: "Café", preco: 3.0 },
-  { id: "b2", nome: "Café com Leite", preco: 4.0 },
-  { id: "b3", nome: "Cappuccino", preco: 6.0 },
-  { id: "b4", nome: "Refrigerante Lata", preco: 5.0 },
-  { id: "b5", nome: "Suco Natural", preco: 7.0 },
-  { id: "b6", nome: "Água Mineral", preco: 3.0 },
-  { id: "b7", nome: "Água com Gás", preco: 4.0 },
+  { id: "b1", nome: "Café", preco: 5.0 },
+  { id: "b2", nome: "Café com Leite", preco: 5.0 },
 ]
 
 function ItemList({
@@ -127,6 +114,7 @@ function ItemList({
 export default function Lanches() {
   const [quantidades, setQuantidades] = useState<Record<string, number>>({})
   const [observacoes, setObservacoes] = useState("")
+  const [activeTab, setActiveTab] = useState("pasteis")
 
   const aumentarQuantidade = (id: string) => {
     setQuantidades((prev) => ({
@@ -182,31 +170,63 @@ export default function Lanches() {
         <p className="text-muted-foreground mt-2">Confira nossas opções de lanches e bebidas</p>
       </header>
 
-      <div className="flex-1 px-6 py-6">
-        <Tabs defaultValue="pasteis" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6 h-auto gap-2">
-            <TabsTrigger value="pasteis" className="text-xs sm:text-sm">
-              <Pizza className="mr-1 h-4 w-4" />
+      <div className="flex-1 py-6 px-[16x]">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full px-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6 h-auto gap-2 bg-transparent p-0">
+            <TabsTrigger
+              value="pasteis"
+              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+                activeTab === "pasteis"
+                  ? "border-primary border-4 text-primary bg-transparent"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              <Pizza className="mr-2 h-4 w-4" />
               Pastéis
             </TabsTrigger>
-            <TabsTrigger value="hamburgueres" className="text-xs sm:text-sm">
-              <Sandwich className="mr-1 h-4 w-4" />
-              Hambúrgueres
-            </TabsTrigger>
-            <TabsTrigger value="xis" className="text-xs sm:text-sm">
-              <Sandwich className="mr-1 h-4 w-4" />
+            
+            <TabsTrigger
+              value="xis"
+              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+                activeTab === "xis"
+                  ? "border-primary border-4 text-primary bg-transparent"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              <Sandwich className="mr-2 h-4 w-4" />
               Xis
             </TabsTrigger>
-            <TabsTrigger value="torradas" className="text-xs sm:text-sm">
-              <Cookie className="mr-1 h-4 w-4" />
+            <TabsTrigger
+              value="torradas"
+              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+                activeTab === "torradas"
+                  ? "border-primary border-4 text-primary bg-transparent"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              <Cookie className="mr-2 h-4 w-4" />
               Torradas
             </TabsTrigger>
-            <TabsTrigger value="pao" className="text-xs sm:text-sm">
-              <Cookie className="mr-1 h-4 w-4" />
+            <TabsTrigger
+              value="pao"
+              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+                activeTab === "pao"
+                  ? "border-primary border-4 text-primary bg-transparent"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              <Cookie className="mr-2 h-4 w-4" />
               Pão Queijo
             </TabsTrigger>
-            <TabsTrigger value="bebidas" className="text-xs sm:text-sm">
-              <Coffee className="mr-1 h-4 w-4" />
+            <TabsTrigger
+              value="bebidas"
+              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+                activeTab === "bebidas"
+                  ? "border-primary border-4 text-primary bg-transparent"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              <Coffee className="mr-2 h-4 w-4" />
               Bebidas
             </TabsTrigger>
           </TabsList>
