@@ -18,20 +18,14 @@ const pasteis: Item[] = [
   { id: "p1", nome: "Carne", preco: 8.0 },
   { id: "p3", nome: "Queijo", preco: 10.0 },
   { id: "p4", nome: "Carne e Queijo", preco: 10.0 },
-  { id: "p5", nome: "Queijo e Presunto", preco: 10.0},
+  { id: "p5", nome: "Queijo e Presunto", preco: 10.0 },
   { id: "p6", nome: "Chocolate Preto", preco: 10.0 },
   { id: "p7", nome: "Chocolate Branco", preco: 10.0 },
   { id: "p8", nome: "Chocolate Misto", preco: 10.0 },
 ]
 
-const hamburgueres: Item[] = [
-  { id: "h1", nome: "X-Burger", preco: 16.0 },
-  { id: "h2", nome: "X-Especial", preco: 16.0 },
-
-]
-
 const xis: Item[] = [
-  { id: "h1", nome: "X-Burger", preco: 16.0 },
+  { id: "h1", nome: "Hamburguer", preco: 16.0 },
   { id: "h2", nome: "X-Especial", preco: 16.0 },
 ]
 
@@ -42,13 +36,19 @@ const torradas: Item[] = [
   { id: "t4", nome: "Torrada Mista Completa", preco: 12.0 },
 ]
 
-const paesDeQueijo: Item[] = [
-  { id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 },
-]
+const paesDeQueijo: Item[] = [{ id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 }]
 
 const bebidas: Item[] = [
   { id: "b1", nome: "Café", preco: 5.0 },
   { id: "b2", nome: "Café com Leite", preco: 5.0 },
+  { id: "b3", nome: "Coca MINI", preco: 4.0 },
+  { id: "b4", nome: "Coca 350ml", preco: 6.0 },
+  { id: "b5", nome: "Coca 600ml", preco: 8.0 },
+  { id: "b6", nome: "Coca 2L", preco: 15.0 },
+  { id: "b7", nome: "Energetico Monster", preco: 13.0 },
+  { id: "b8", nome: "Red Bull 350ml", preco: 13.0 },
+  { id: "b9", nome: "Gatorade", preco: 9.0 },
+
 ]
 
 function ItemList({
@@ -135,7 +135,7 @@ export default function Lanches() {
     setObservacoes("")
   }
 
-  const todosItens = [...pasteis, ...hamburgueres, ...xis, ...torradas, ...paesDeQueijo, ...bebidas]
+  const todosItens = [...pasteis, ...xis, ...torradas, ...paesDeQueijo, ...bebidas]
   const itensSelecionados = todosItens.filter((item) => quantidades[item.id] > 0)
   const valorTotal = itensSelecionados.reduce((acc, item) => acc + item.preco * quantidades[item.id], 0)
 
@@ -170,79 +170,70 @@ export default function Lanches() {
         <p className="text-muted-foreground mt-2">Confira nossas opções de lanches e bebidas</p>
       </header>
 
-      <div className="flex-1 py-6 px-[16x]">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full px-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6 h-auto gap-2 bg-transparent p-0">
+      <div className="flex-1 py-6 px-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full px-3">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-8 h-auto gap-3 bg-transparent p-0">
             <TabsTrigger
               value="pasteis"
-              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
                 activeTab === "pasteis"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
               }`}
             >
-              <Pizza className="mr-2 h-4 w-4" />
-              Pastéis
+              <Pizza className="h-5 w-5 mb-1" />
+              <span className="truncate">Pastéis</span>
             </TabsTrigger>
-            
+
             <TabsTrigger
               value="xis"
-              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
                 activeTab === "xis"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
               }`}
             >
-              <Sandwich className="mr-2 h-4 w-4" />
-              Xis
+              <Sandwich className="h-5 w-5 mb-1" />
+              <span className="truncate text-xs">Xis e Burgers</span>
             </TabsTrigger>
             <TabsTrigger
               value="torradas"
-              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
                 activeTab === "torradas"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
               }`}
             >
-              <Cookie className="mr-2 h-4 w-4" />
-              Torradas
+              <Cookie className="h-5 w-5 mb-1" />
+              <span className="truncate">Torradas</span>
             </TabsTrigger>
             <TabsTrigger
               value="pao"
-              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
                 activeTab === "pao"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
               }`}
             >
-              <Cookie className="mr-2 h-4 w-4" />
-              Pão Queijo
+              <Cookie className="h-5 w-5 mb-1" />
+              <span className="truncate">Pão Queijo</span>
             </TabsTrigger>
             <TabsTrigger
               value="bebidas"
-              className={`text-xs sm:text-sm py-3 px-4 rounded-lg border-2 transition-all font-semibold ${
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
                 activeTab === "bebidas"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
               }`}
             >
-              <Coffee className="mr-2 h-4 w-4" />
-              Bebidas
+              <Coffee className="h-5 w-5 mb-1" />
+              <span className="truncate">Bebidas</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="pasteis" className="mt-6">
+          <TabsContent value="pasteis" className="mt-8">
             <ItemList
               items={pasteis}
-              quantidades={quantidades}
-              aumentar={aumentarQuantidade}
-              diminuir={diminuirQuantidade}
-            />
-          </TabsContent>
-
-          <TabsContent value="hamburgueres" className="mt-6">
-            <ItemList
-              items={hamburgueres}
               quantidades={quantidades}
               aumentar={aumentarQuantidade}
               diminuir={diminuirQuantidade}
