@@ -1,7 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, Plus, Minus, MessageCircle, Coffee, Sandwich, Pizza, Cookie, Trash } from "lucide-react"
+import {
+  ArrowLeft,
+  Plus,
+  Minus,
+  MessageCircle,
+  Coffee,
+  Sandwich,
+  Pizza,
+  Cookie,
+  Trash,
+  UtensilsCrossed,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -16,6 +27,7 @@ interface Item {
 
 const pasteis: Item[] = [
   { id: "p1", nome: "Carne", preco: 9.0 },
+  { id: "p2", nome: "Frango", preco: 9.0 },
   { id: "p3", nome: "Carne e Queijo", preco: 11.0 },
   { id: "p4", nome: "Queijo", preco: 11.0 },
   { id: "p5", nome: "Queijo e Presunto", preco: 10.0 },
@@ -29,9 +41,7 @@ const xis: Item[] = [
   { id: "h2", nome: "X-Especial", preco: 17.0 },
 ]
 
-const torradas: Item[] = [
-  { id: "t1", nome: "Torrada Completa", preco: 10.0 },
-]
+const torradas: Item[] = [{ id: "t1", nome: "Torrada Completa", preco: 10.0 }]
 
 const paesDeQueijo: Item[] = [{ id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 }]
 
@@ -45,7 +55,44 @@ const bebidas: Item[] = [
   { id: "b7", nome: "Energetico Monster", preco: 13.0 },
   { id: "b8", nome: "Red Bull", preco: 13.0 },
   { id: "b9", nome: "Gatorade", preco: 9.0 },
+]
 
+const diversos: Item[] = [
+  { id: "d1", nome: "Espetinho", preco: 12.0 },
+  // Chocolates
+  { id: "d2", nome: "Snickers", preco: 6.0 },
+  { id: "d3", nome: "Sonho De Valsa", preco: 2.0 },
+  { id: "d4", nome: "Ouro Branco", preco: 2.0 },
+  { id: "d5", nome: "Trento Tradicional", preco: 5.0 },
+  { id: "d6", nome: "Trento Branco", preco: 5.0 },
+  { id: "d7", nome: "Trento Dark", preco: 5.0 },
+  { id: "d8", nome: "Lacta Shot", preco: 12.0 },
+  { id: "d9", nome: "Lacta Oreo", preco: 12.0 },
+  { id: "d10", nome: "Lacta Ao Leite", preco: 12.0 },
+  { id: "d11", nome: "Lacta Tamanho Família", preco: 16.0 },
+  { id: "d12", nome: "Kinder Bueno", preco: 10.0 },
+
+  // Salgadinhos
+  { id: "d13", nome: "Doritos", preco: 12.0 },
+  { id: "d14", nome: "Ruffles", preco: 12.0 },
+  { id: "d15", nome: "Fandangos", preco: 12.0 },
+  { id: "d16", nome: "Cheetos Assado", preco: 12.0 },
+  { id: "d17", nome: "Baconzitos", preco: 12.0 },
+  { id: "d18", nome: "Cebolitos", preco: 12.0 },
+  { id: "d19", nome: "Stiksy", preco: 12.0 },
+  { id: "d20", nome: "Pingo d’Ouro", preco: 12.0 },
+  { id: "d21", nome: "Takis", preco: 10.0 },
+  { id: "d22", nome: "Crocantíssimo", preco: 8.0 },
+
+  // Doces e gomas
+  { id: "d23", nome: "Mentos", preco: 3.5 },
+  { id: "d24", nome: "Trident", preco: 3.5 },
+  { id: "d25", nome: "Fruit-tella", preco: 4.5 },
+  { id: "d26", nome: "Tic Tac", preco: 4.0 },
+
+  // Barras e outros
+  { id: "d27", nome: "Barra Nutry", preco: 5.0 },
+  { id: "d28", nome: "Amendoim Iracema", preco: 8.0 },
 ]
 
 function ItemList({
@@ -132,7 +179,7 @@ export default function Lanches() {
     setObservacoes("")
   }
 
-  const todosItens = [...pasteis, ...xis, ...torradas, ...paesDeQueijo, ...bebidas]
+  const todosItens = [...pasteis, ...xis, ...torradas, ...paesDeQueijo, ...bebidas, ...diversos]
   const itensSelecionados = todosItens.filter((item) => quantidades[item.id] > 0)
   const valorTotal = itensSelecionados.reduce((acc, item) => acc + item.preco * quantidades[item.id], 0)
 
@@ -140,7 +187,7 @@ export default function Lanches() {
     let mensagem = "🍴 *Pedido - Estacionamento Fittipaldi*\n\n"
 
     itensSelecionados.forEach((item) => {
-      mensagem += `✔ ${item.nome} — ${quantidades[item.id]}x\n`
+      mensagem += `✔ ${item.nome} — ${quantidades[item.id]}x ${item.preco.toFixed(2).replace(".", ",")}\n`
     })
 
     mensagem += `\n*Total: R$ ${valorTotal.toFixed(2).replace(".", ",")}*`
@@ -149,7 +196,7 @@ export default function Lanches() {
       mensagem += `\n\n📝 Observações:\n${observacoes}`
     }
 
-    const numeroWhatsApp = "5554996127617"
+    const numeroWhatsApp = "555499710222"
     const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
     window.open(url, "_blank")
   }
@@ -226,6 +273,18 @@ export default function Lanches() {
               <Coffee className="h-5 w-5 mb-1" />
               <span className="truncate">Bebidas</span>
             </TabsTrigger>
+
+            <TabsTrigger
+              value="diversos"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
+                activeTab === "diversos"
+                  ? "border-primary border-4 text-primary bg-transparent"
+                  : "bg-card border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              <UtensilsCrossed className="h-5 w-5 mb-1" />
+              <span className="truncate">Diversos</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pasteis" className="mt-8">
@@ -267,6 +326,15 @@ export default function Lanches() {
           <TabsContent value="bebidas" className="mt-6">
             <ItemList
               items={bebidas}
+              quantidades={quantidades}
+              aumentar={aumentarQuantidade}
+              diminuir={diminuirQuantidade}
+            />
+          </TabsContent>
+
+          <TabsContent value="diversos" className="mt-6">
+            <ItemList
+              items={diversos}
               quantidades={quantidades}
               aumentar={aumentarQuantidade}
               diminuir={diminuirQuantidade}
@@ -320,7 +388,6 @@ export default function Lanches() {
                 title="Limpar carrinho"
               >
                 <Trash />
-
               </Button>
               <Button onClick={enviarPedido} className="flex-1 h-12 text-base font-bold" size="lg">
                 <MessageCircle className="mr-2 h-5 w-5" />
