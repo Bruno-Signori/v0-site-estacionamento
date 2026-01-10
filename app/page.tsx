@@ -16,7 +16,7 @@ export default function Home() {
           </h2>
         </div>
         <p className="text-muted-foreground mt-6 text-sm md:text-base max-w-sm mx-auto leading-relaxed">
-          Seu estacionamento seguro e confiável no coração da cidade
+          Seu estacionamento seguro e confiável ao lado do Hospital São Vicente de Paulo
         </p>
       </header>
 

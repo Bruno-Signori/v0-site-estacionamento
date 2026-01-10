@@ -26,7 +26,7 @@ export default function Contato() {
             size="lg"
             className="w-full h-16 text-base font-bold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            <a href="https://wa.me/seu-numero-whatsapp">
+            <a href="https://wa.me/54999710222">
               <Phone className="mr-2 h-5 w-5" />
               Enviar mensagem no WhatsApp
             </a>
@@ -38,8 +38,19 @@ export default function Contato() {
               <Phone className="h-5 w-5 text-primary" />
               <span className="font-bold">Telefone</span>
             </div>
-            <a href="tel:seu-telefone" className="text-lg font-semibold text-primary hover:underline">
-              (54) 99710222
+            <a href="tel:999710182" className="text-lg font-semibold text-primary hover:underline">
+              (54) 999710182
+            </a>
+          </div>
+
+          {/* Telefone */}
+          <div className="bg-secondary/50 p-6 rounded-lg border border-border">
+            <div className="flex items-center gap-3 mb-2">
+              <Phone className="h-5 w-5 text-primary" />
+              <span className="font-bold">Telefone</span>
+            </div>
+            <a href="tel:999710222" className="text-lg font-semibold text-primary hover:underline">
+              (54) 999710222
             </a>
           </div>
 
@@ -50,10 +61,10 @@ export default function Contato() {
               <span className="font-bold">Email</span>
             </div>
             <a
-              href="mailto:contato@fittipaldi.com"
+              href="mailto:brunowsignori@gmail.com"
               className="text-base font-semibold text-primary hover:underline break-all"
             >
-              contato@fittipaldi.com
+              brunowsignori@gmail.com
             </a>
           </div>
         </div>

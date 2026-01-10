@@ -30,7 +30,7 @@ export default function Precos() {
       precos: [
         { label: "1° Hora", valor: "R$ 5,00" },
         { label: "Demais Horas", valor: "R$ 5,00" },
-        { label: "Diária", valor: "R$ 50,00" },
+        { label: "Diária", valor: "R$ 40,00" },
       ],
     },
   ]

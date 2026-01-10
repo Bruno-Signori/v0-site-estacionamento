@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, Plus, Minus, MessageCircle, Coffee, Sandwich, Pizza, Cookie } from "lucide-react"
+import { ArrowLeft, Plus, Minus, MessageCircle, Coffee, Sandwich, Pizza, Cookie, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -15,25 +15,22 @@ interface Item {
 }
 
 const pasteis: Item[] = [
-  { id: "p1", nome: "Carne", preco: 8.0 },
-  { id: "p3", nome: "Queijo", preco: 10.0 },
-  { id: "p4", nome: "Carne e Queijo", preco: 10.0 },
+  { id: "p1", nome: "Carne", preco: 9.0 },
+  { id: "p3", nome: "Carne e Queijo", preco: 11.0 },
+  { id: "p4", nome: "Queijo", preco: 11.0 },
   { id: "p5", nome: "Queijo e Presunto", preco: 10.0 },
-  { id: "p6", nome: "Chocolate Preto", preco: 10.0 },
-  { id: "p7", nome: "Chocolate Branco", preco: 10.0 },
-  { id: "p8", nome: "Chocolate Misto", preco: 10.0 },
+  { id: "p6", nome: "Chocolate Preto", preco: 11.0 },
+  { id: "p7", nome: "Chocolate Branco", preco: 11.0 },
+  { id: "p8", nome: "Chocolate Misto", preco: 11.0 },
 ]
 
 const xis: Item[] = [
   { id: "h1", nome: "Hamburguer", preco: 16.0 },
-  { id: "h2", nome: "X-Especial", preco: 16.0 },
+  { id: "h2", nome: "X-Especial", preco: 17.0 },
 ]
 
 const torradas: Item[] = [
-  { id: "t1", nome: "Torrada Simples", preco: 5.0 },
-  { id: "t2", nome: "Torrada com Queijo", preco: 7.0 },
-  { id: "t3", nome: "Torrada com Presunto e Queijo", preco: 9.0 },
-  { id: "t4", nome: "Torrada Mista Completa", preco: 12.0 },
+  { id: "t1", nome: "Torrada Completa", preco: 10.0 },
 ]
 
 const paesDeQueijo: Item[] = [{ id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 }]
@@ -41,12 +38,12 @@ const paesDeQueijo: Item[] = [{ id: "pq1", nome: "Pão de Queijo (unidade)", pre
 const bebidas: Item[] = [
   { id: "b1", nome: "Café", preco: 5.0 },
   { id: "b2", nome: "Café com Leite", preco: 5.0 },
-  { id: "b3", nome: "Coca MINI", preco: 4.0 },
+  { id: "b3", nome: "Coca 220ml", preco: 4.0 },
   { id: "b4", nome: "Coca 350ml", preco: 6.0 },
   { id: "b5", nome: "Coca 600ml", preco: 8.0 },
   { id: "b6", nome: "Coca 2L", preco: 15.0 },
   { id: "b7", nome: "Energetico Monster", preco: 13.0 },
-  { id: "b8", nome: "Red Bull 350ml", preco: 13.0 },
+  { id: "b8", nome: "Red Bull", preco: 13.0 },
   { id: "b9", nome: "Gatorade", preco: 9.0 },
 
 ]
@@ -152,7 +149,7 @@ export default function Lanches() {
       mensagem += `\n\n📝 Observações:\n${observacoes}`
     }
 
-    const numeroWhatsApp = "5554996127617" // Substitua pelo número real
+    const numeroWhatsApp = "5554996127617"
     const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`
     window.open(url, "_blank")
   }
@@ -281,7 +278,7 @@ export default function Lanches() {
           <div className="max-w-2xl mx-auto mt-6">
             <label className="block text-sm font-medium mb-2">Observações (opcional)</label>
             <Textarea
-              placeholder="Ex: sem cebola, bem passado..."
+              placeholder="Ex: sem ovo, bem passado, etc..."
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
               className="resize-none bg-card"
@@ -322,21 +319,8 @@ export default function Lanches() {
                 className="h-12 w-12 rounded-full flex-shrink-0 bg-transparent"
                 title="Limpar carrinho"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M3 6h18" />
-                  <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" />
-                  <line x1="10" y1="11" x2="10" y2="17" />
-                  <line x1="14" y1="11" x2="14" y2="17" />
-                </svg>
+                <Trash />
+
               </Button>
               <Button onClick={enviarPedido} className="flex-1 h-12 text-base font-bold" size="lg">
                 <MessageCircle className="mr-2 h-5 w-5" />
