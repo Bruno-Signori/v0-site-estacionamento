@@ -27,8 +27,8 @@ interface Item {
 
 const pasteis: Item[] = [
   { id: "p1", nome: "Carne", preco: 9.0 },
-  { id: "p2", nome: "Frango", preco: 9.0 },
-  { id: "p3", nome: "Carne e Queijo", preco: 11.0 },
+  { id: "p2", nome: "Frango", preco: 10.0 },
+  { id: "p3", nome: "Carne e Queijo", preco: 10.0 },
   { id: "p4", nome: "Queijo", preco: 11.0 },
   { id: "p5", nome: "Queijo e Presunto", preco: 10.0 },
   { id: "p6", nome: "Chocolate Preto", preco: 11.0 },
