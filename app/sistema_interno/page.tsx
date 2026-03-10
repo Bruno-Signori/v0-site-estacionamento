@@ -31,7 +31,9 @@ import {
   BarChart3,
   User,
   ChevronLeft,
+  Printer,
 } from "lucide-react";
+import { PrintReceipt } from "@/components/print-receipt";
 
 type Mesa = {
   id_mesa: string;
@@ -102,6 +104,10 @@ export default function SistemaInternoPage() {
 
   // Detalhe pedido
   const [pedidoDetalhe, setPedidoDetalhe] = useState<Pedido | null>(null);
+  // Detalhe pedido do relatorio (fechado)
+  const [pedidoRelatorioDetalhe, setPedidoRelatorioDetalhe] = useState<Pedido | null>(null);
+  // Impressao
+  const [pedidoParaImprimir, setPedidoParaImprimir] = useState<Pedido | null>(null);
 
   // Relatorio
   const [dataRelatorio, setDataRelatorio] = useState(
@@ -889,9 +895,10 @@ export default function SistemaInternoPage() {
                 ) : (
                   <div className="flex flex-col gap-2">
                     {pedidosFechados.map((pedido) => (
-                      <div
+                      <button
                         key={pedido.id_pedido}
-                        className="rounded-xl border border-border bg-card p-4"
+                        onClick={() => setPedidoRelatorioDetalhe(pedido)}
+                        className="w-full rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-primary"
                       >
                         <div className="flex items-center justify-between">
                           <div>
@@ -952,7 +959,7 @@ export default function SistemaInternoPage() {
                             </span>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}
@@ -1045,6 +1052,15 @@ export default function SistemaInternoPage() {
               </div>
               <div className="flex gap-2">
                 <Button
+                  onClick={() => setPedidoParaImprimir(pedidoDetalhe)}
+                  variant="outline"
+                  size="sm"
+                  className="border-border text-muted-foreground hover:text-foreground"
+                  title="Imprimir pedido"
+                >
+                  <Printer className="h-4 w-4" />
+                </Button>
+                <Button
                   onClick={() => {
                     setPedidoEditando(pedidoDetalhe);
                     setCategoriaSelecionada(categorias[0] || "");
@@ -1079,6 +1095,101 @@ export default function SistemaInternoPage() {
             </div>
           </div>
         </div>
+      )}
+      {/* === MODAL: Detalhe do Pedido Fechado (Relatorio) === */}
+      {pedidoRelatorioDetalhe && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 sm:items-center sm:p-4">
+          <div className="flex max-h-[90vh] w-full flex-col rounded-t-2xl border border-border bg-card sm:max-w-lg sm:rounded-2xl">
+            <div className="flex items-center justify-between border-b border-border p-4">
+              <div>
+                <h3 className="text-lg font-bold text-foreground">
+                  {pedidoRelatorioDetalhe.mesas
+                    ? `Mesa ${pedidoRelatorioDetalhe.mesas.nr_mesa}`
+                    : pedidoRelatorioDetalhe.nm_cliente || "Balcao"}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(pedidoRelatorioDetalhe.dh_abertura).toLocaleString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  {" | "}
+                  <span
+                    className={
+                      pedidoRelatorioDetalhe.cd_status === "fechado"
+                        ? "text-primary"
+                        : "text-destructive"
+                    }
+                  >
+                    {pedidoRelatorioDetalhe.cd_status === "fechado" ? "Fechado" : "Cancelado"}
+                  </span>
+                </p>
+              </div>
+              <button
+                onClick={() => setPedidoRelatorioDetalhe(null)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4">
+              {pedidoRelatorioDetalhe.itens_pedido.length === 0 ? (
+                <p className="py-8 text-center text-sm text-muted-foreground">
+                  Nenhum item registrado.
+                </p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {pedidoRelatorioDetalhe.itens_pedido.map((item) => (
+                    <div
+                      key={item.id_item}
+                      className="flex items-center justify-between rounded-lg border border-border bg-background p-3"
+                    >
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-foreground">
+                          {item.nr_quantidade}x {item.produtos.nm_produto}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          R$ {Number(item.vl_unitario).toFixed(2).replace(".", ",")} un.
+                        </p>
+                      </div>
+                      <span className="text-sm font-bold text-primary">
+                        R$ {Number(item.vl_subtotal).toFixed(2).replace(".", ",")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-border p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Total</span>
+                <span className="text-xl font-bold text-primary">
+                  R$ {Number(pedidoRelatorioDetalhe.vl_total).toFixed(2).replace(".", ",")}
+                </span>
+              </div>
+              <Button
+                onClick={() => {
+                  setPedidoParaImprimir(pedidoRelatorioDetalhe);
+                }}
+                className="w-full bg-primary font-bold text-primary-foreground hover:bg-primary/90"
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                Imprimir Comprovante
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* === IMPRESSAO === */}
+      {pedidoParaImprimir && (
+        <PrintReceipt
+          pedido={pedidoParaImprimir}
+          onClose={() => setPedidoParaImprimir(null)}
+        />
       )}
     </div>
   );

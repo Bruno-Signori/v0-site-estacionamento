@@ -34,6 +34,7 @@ const pasteis: Item[] = [
   { id: "p6", nome: "Chocolate Preto", preco: 11.0 },
   { id: "p7", nome: "Chocolate Branco", preco: 11.0 },
   { id: "p8", nome: "Chocolate Misto", preco: 11.0 },
+  { id: "p9", nome: "Queijo com Goiabada", preco: 10.0 },
 ]
 
 const xis: Item[] = [
