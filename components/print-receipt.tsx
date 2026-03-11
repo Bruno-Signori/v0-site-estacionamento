@@ -5,11 +5,12 @@ import { useEffect } from "react";
 type ItemPedido = {
   id_item: string;
   id_pedido: string;
-  id_produto: string;
+  id_produto: string | null;
+  nm_produto_avulso: string | null;
   nr_quantidade: number;
   vl_unitario: number;
   vl_subtotal: number;
-  produtos: { nm_produto: string; ds_categoria: string };
+  produtos: { nm_produto: string; ds_categoria: string } | null;
 };
 
 type Pedido = {
@@ -145,7 +146,8 @@ export function PrintReceipt({ pedido, onClose }: PrintReceiptProps) {
               >
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span>
-                    {item.nr_quantidade}x {item.produtos.nm_produto}
+                    {item.nr_quantidade}x{" "}
+                    {item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item"}
                   </span>
                   <span>
                     R${" "}

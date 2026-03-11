@@ -12,6 +12,7 @@ import {
   abrirPedidoMesa,
   abrirPedidoBalcao,
   adicionarItem,
+  adicionarItemAvulso,
   removerItem,
   fecharPedido,
   cancelarPedido,
@@ -51,11 +52,12 @@ type Produto = {
 type ItemPedido = {
   id_item: string;
   id_pedido: string;
-  id_produto: string;
+  id_produto: string | null;
+  nm_produto_avulso: string | null;
   nr_quantidade: number;
   vl_unitario: number;
   vl_subtotal: number;
-  produtos: { nm_produto: string; ds_categoria: string };
+  produtos: { nm_produto: string; ds_categoria: string } | null;
 };
 
 type Pedido = {
@@ -108,6 +110,11 @@ export default function SistemaInternoPage() {
   const [pedidoRelatorioDetalhe, setPedidoRelatorioDetalhe] = useState<Pedido | null>(null);
   // Impressao
   const [pedidoParaImprimir, setPedidoParaImprimir] = useState<Pedido | null>(null);
+  // Item avulso
+  const [modalAvulso, setModalAvulso] = useState(false);
+  const [avulsoNome, setAvulsoNome] = useState("");
+  const [avulsoValor, setAvulsoValor] = useState("");
+  const [avulsoQtd, setAvulsoQtd] = useState(1);
 
   // Relatorio
   const [dataRelatorio, setDataRelatorio] = useState(
@@ -247,6 +254,38 @@ export default function SistemaInternoPage() {
       setNomeCliente("");
       await carregarDados();
       setActiveTab("pedidos");
+    } catch {
+      // erro
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleAdicionarAvulso = async () => {
+    if (!pedidoEditando || !avulsoNome.trim() || !avulsoValor) return;
+    const valor = parseFloat(avulsoValor.replace(",", "."));
+    if (isNaN(valor) || valor <= 0) return;
+    setActionLoading(true);
+    try {
+      await adicionarItemAvulso(
+        pedidoEditando.id_pedido,
+        avulsoNome.trim(),
+        avulsoQtd,
+        valor
+      );
+      setModalAvulso(false);
+      setAvulsoNome("");
+      setAvulsoValor("");
+      setAvulsoQtd(1);
+      await carregarDados();
+      const pedidosAtualizados = (await getPedidosAbertos()) as unknown as Pedido[];
+      const atualizado = pedidosAtualizados.find(
+        (p) => p.id_pedido === pedidoEditando.id_pedido
+      );
+      if (atualizado) {
+        setPedidoEditando(atualizado);
+        setPedidoDetalhe(atualizado);
+      }
     } catch {
       // erro
     } finally {
@@ -595,6 +634,17 @@ export default function SistemaInternoPage() {
               {formatarCategoria(cat)}
             </button>
           ))}
+          <button
+            onClick={() => {
+              setAvulsoNome("");
+              setAvulsoValor("");
+              setAvulsoQtd(1);
+              setModalAvulso(true);
+            }}
+            className="flex-shrink-0 rounded-full border border-dashed border-primary px-4 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/10"
+          >
+            + Avulso
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
@@ -1010,7 +1060,8 @@ export default function SistemaInternoPage() {
                     >
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-foreground">
-                          {item.nr_quantidade}x {item.produtos.nm_produto}
+                          {item.nr_quantidade}x{" "}
+                          {item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item"}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           R${" "}
@@ -1147,12 +1198,13 @@ export default function SistemaInternoPage() {
                       className="flex items-center justify-between rounded-lg border border-border bg-background p-3"
                     >
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-foreground">
-                          {item.nr_quantidade}x {item.produtos.nm_produto}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          R$ {Number(item.vl_unitario).toFixed(2).replace(".", ",")} un.
-                        </p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {item.nr_quantidade}x{" "}
+                        {item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        R$ {Number(item.vl_unitario).toFixed(2).replace(".", ",")} un.
+                      </p>
                       </div>
                       <span className="text-sm font-bold text-primary">
                         R$ {Number(item.vl_subtotal).toFixed(2).replace(".", ",")}
@@ -1178,6 +1230,97 @@ export default function SistemaInternoPage() {
               >
                 <Printer className="mr-2 h-4 w-4" />
                 Imprimir Comprovante
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* === MODAL: Item Avulso === */}
+      {modalAvulso && pedidoEditando && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 sm:items-center sm:p-4">
+          <div className="w-full rounded-t-2xl border border-border bg-card p-5 sm:max-w-sm sm:rounded-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-base font-bold text-foreground">Item Avulso</h3>
+              <button
+                onClick={() => setModalAvulso(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                  Nome do produto
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Sorvete, Caldo de cana..."
+                  value={avulsoNome}
+                  onChange={(e) => setAvulsoNome(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                    Valor unitario (R$)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="0,00"
+                    min="0"
+                    step="0.01"
+                    value={avulsoValor}
+                    onChange={(e) => setAvulsoValor(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                    Quantidade
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setAvulsoQtd((q) => Math.max(1, q - 1))}
+                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:border-primary"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <span className="flex-1 text-center text-sm font-bold text-foreground">
+                      {avulsoQtd}
+                    </span>
+                    <button
+                      onClick={() => setAvulsoQtd((q) => q + 1)}
+                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {avulsoNome && avulsoValor && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-center">
+                  <p className="text-xs text-muted-foreground">Total do item</p>
+                  <p className="text-lg font-bold text-primary">
+                    R${" "}
+                    {(avulsoQtd * parseFloat(avulsoValor.replace(",", ".") || "0"))
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </p>
+                </div>
+              )}
+
+              <Button
+                onClick={handleAdicionarAvulso}
+                disabled={actionLoading || !avulsoNome.trim() || !avulsoValor || parseFloat(avulsoValor) <= 0}
+                className="w-full bg-primary font-bold text-primary-foreground hover:bg-primary/90"
+              >
+                {actionLoading ? "Adicionando..." : "Adicionar ao Pedido"}
               </Button>
             </div>
           </div>
