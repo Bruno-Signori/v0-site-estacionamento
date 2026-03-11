@@ -35,6 +35,7 @@ import {
   Printer,
 } from "lucide-react";
 import { PrintReceipt } from "@/components/print-receipt";
+import { ModalItemAvulso } from "@/components/modal-item-avulso";
 
 type Mesa = {
   id_mesa: string;
@@ -262,16 +263,9 @@ export default function SistemaInternoPage() {
   };
 
   const handleAdicionarAvulso = async () => {
-    console.log("[v0] handleAdicionarAvulso chamado", { pedidoEditando, avulsoNome, avulsoValor });
-    if (!pedidoEditando || !avulsoNome.trim() || !avulsoValor) {
-      console.log("[v0] Validacao falhou", { pedidoEditando: !!pedidoEditando, nome: avulsoNome.trim(), valor: avulsoValor });
-      return;
-    }
+    if (!pedidoEditando || !avulsoNome.trim() || !avulsoValor) return;
     const valor = parseFloat(avulsoValor.replace(",", "."));
-    if (isNaN(valor) || valor <= 0) {
-      console.log("[v0] Valor invalido", valor);
-      return;
-    }
+    if (isNaN(valor) || valor <= 0) return;
     setActionLoading(true);
     try {
       await adicionarItemAvulso(
@@ -643,11 +637,10 @@ export default function SistemaInternoPage() {
           ))}
           <button
             onClick={() => {
-              console.log("[v0] Botao avulso clicado");
+              setModalAvulso(true);
               setAvulsoNome("");
               setAvulsoValor("");
               setAvulsoQtd(1);
-              setModalAvulso(true);
             }}
             className="flex-shrink-0 rounded-full border border-dashed border-primary px-4 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/10"
           >
@@ -1245,95 +1238,18 @@ export default function SistemaInternoPage() {
       )}
 
       {/* === MODAL: Item Avulso === */}
-      {modalAvulso && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 sm:items-center sm:p-4">
-          <div className="w-full rounded-t-2xl border border-border bg-card p-5 sm:max-w-sm sm:rounded-2xl">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-base font-bold text-foreground">Item Avulso</h3>
-              <button
-                onClick={() => setModalAvulso(false)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div>
-                <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
-                  Nome do produto
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex: Sorvete, Caldo de cana..."
-                  value={avulsoNome}
-                  onChange={(e) => setAvulsoNome(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
-                    Valor unitario (R$)
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="0,00"
-                    min="0"
-                    step="0.01"
-                    value={avulsoValor}
-                    onChange={(e) => setAvulsoValor(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
-                    Quantidade
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setAvulsoQtd((q) => Math.max(1, q - 1))}
-                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-border bg-background text-foreground hover:border-primary"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="flex-1 text-center text-sm font-bold text-foreground">
-                      {avulsoQtd}
-                    </span>
-                    <button
-                      onClick={() => setAvulsoQtd((q) => q + 1)}
-                      className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {avulsoNome && avulsoValor && (
-                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-center">
-                  <p className="text-xs text-muted-foreground">Total do item</p>
-                  <p className="text-lg font-bold text-primary">
-                    R${" "}
-                    {(avulsoQtd * parseFloat(avulsoValor.replace(",", ".") || "0"))
-                      .toFixed(2)
-                      .replace(".", ",")}
-                  </p>
-                </div>
-              )}
-
-              <Button
-                onClick={handleAdicionarAvulso}
-                disabled={actionLoading || !avulsoNome.trim() || !avulsoValor || parseFloat(avulsoValor) <= 0}
-                className="w-full bg-primary font-bold text-primary-foreground hover:bg-primary/90"
-              >
-                {actionLoading ? "Adicionando..." : "Adicionar ao Pedido"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ModalItemAvulso
+        isOpen={modalAvulso}
+        nmProduto={avulsoNome}
+        valor={avulsoValor}
+        quantidade={avulsoQtd}
+        isLoading={actionLoading}
+        onNomeChange={setAvulsoNome}
+        onValorChange={setAvulsoValor}
+        onQuantidadeChange={setAvulsoQtd}
+        onConfirm={handleAdicionarAvulso}
+        onClose={() => setModalAvulso(false)}
+      />
 
       {/* === IMPRESSAO === */}
       {pedidoParaImprimir && (
