@@ -262,9 +262,16 @@ export default function SistemaInternoPage() {
   };
 
   const handleAdicionarAvulso = async () => {
-    if (!pedidoEditando || !avulsoNome.trim() || !avulsoValor) return;
+    console.log("[v0] handleAdicionarAvulso chamado", { pedidoEditando, avulsoNome, avulsoValor });
+    if (!pedidoEditando || !avulsoNome.trim() || !avulsoValor) {
+      console.log("[v0] Validacao falhou", { pedidoEditando: !!pedidoEditando, nome: avulsoNome.trim(), valor: avulsoValor });
+      return;
+    }
     const valor = parseFloat(avulsoValor.replace(",", "."));
-    if (isNaN(valor) || valor <= 0) return;
+    if (isNaN(valor) || valor <= 0) {
+      console.log("[v0] Valor invalido", valor);
+      return;
+    }
     setActionLoading(true);
     try {
       await adicionarItemAvulso(
@@ -636,6 +643,7 @@ export default function SistemaInternoPage() {
           ))}
           <button
             onClick={() => {
+              console.log("[v0] Botao avulso clicado");
               setAvulsoNome("");
               setAvulsoValor("");
               setAvulsoQtd(1);
@@ -1237,7 +1245,7 @@ export default function SistemaInternoPage() {
       )}
 
       {/* === MODAL: Item Avulso === */}
-      {modalAvulso && pedidoEditando && (
+      {modalAvulso && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 sm:items-center sm:p-4">
           <div className="w-full rounded-t-2xl border border-border bg-card p-5 sm:max-w-sm sm:rounded-2xl">
             <div className="mb-4 flex items-center justify-between">
