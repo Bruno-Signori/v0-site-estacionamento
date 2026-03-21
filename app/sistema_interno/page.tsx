@@ -675,6 +675,19 @@ export default function SistemaInternoPage() {
               ))}
           </div>
         </div>
+
+        <ModalItemAvulso
+          isOpen={modalAvulso}
+          nmProduto={avulsoNome}
+          valor={avulsoValor}
+          quantidade={avulsoQtd}
+          isLoading={actionLoading}
+          onNomeChange={setAvulsoNome}
+          onValorChange={setAvulsoValor}
+          onQuantidadeChange={setAvulsoQtd}
+          onConfirm={handleAdicionarAvulso}
+          onClose={() => setModalAvulso(false)}
+        />
       </div>
     );
   }
