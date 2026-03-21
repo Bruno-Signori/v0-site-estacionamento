@@ -19,8 +19,7 @@ export default function Precos() {
       icone: Truck,
       precos: [
         { label: "1° Hora", valor: "R$ 10,00" },
-        { label: "2° Hora", valor: "R$ 10,00" },
-        { label: "Demais Horas", valor: "R$ 8,00" },
+        { label: "Demais Horas", valor: "R$ 10,00" },
         { label: "Diária", valor: "R$ 60,00" },
       ],
     },
