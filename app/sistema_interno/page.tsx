@@ -12,6 +12,7 @@ import {
   abrirPedidoMesa,
   abrirPedidoBalcao,
   adicionarItem,
+  adicionarItemAvulso,
   removerItem,
   fecharPedido,
   cancelarPedido,
@@ -34,6 +35,7 @@ import {
   Printer,
 } from "lucide-react";
 import { PrintReceipt } from "@/components/print-receipt";
+import { ModalItemAvulso } from "@/components/modal-item-avulso";
 
 type Mesa = {
   id_mesa: string;
@@ -51,11 +53,12 @@ type Produto = {
 type ItemPedido = {
   id_item: string;
   id_pedido: string;
-  id_produto: string;
+  id_produto: string | null;
+  nm_produto_avulso: string | null;
   nr_quantidade: number;
   vl_unitario: number;
   vl_subtotal: number;
-  produtos: { nm_produto: string; ds_categoria: string };
+  produtos: { nm_produto: string; ds_categoria: string } | null;
 };
 
 type Pedido = {
@@ -108,6 +111,11 @@ export default function SistemaInternoPage() {
   const [pedidoRelatorioDetalhe, setPedidoRelatorioDetalhe] = useState<Pedido | null>(null);
   // Impressao
   const [pedidoParaImprimir, setPedidoParaImprimir] = useState<Pedido | null>(null);
+  // Item avulso
+  const [modalAvulso, setModalAvulso] = useState(false);
+  const [avulsoNome, setAvulsoNome] = useState("");
+  const [avulsoValor, setAvulsoValor] = useState("");
+  const [avulsoQtd, setAvulsoQtd] = useState(1);
 
   // Relatorio
   const [dataRelatorio, setDataRelatorio] = useState(
@@ -247,6 +255,38 @@ export default function SistemaInternoPage() {
       setNomeCliente("");
       await carregarDados();
       setActiveTab("pedidos");
+    } catch {
+      // erro
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleAdicionarAvulso = async () => {
+    if (!pedidoEditando || !avulsoNome.trim() || !avulsoValor) return;
+    const valor = parseFloat(avulsoValor.replace(",", "."));
+    if (isNaN(valor) || valor <= 0) return;
+    setActionLoading(true);
+    try {
+      await adicionarItemAvulso(
+        pedidoEditando.id_pedido,
+        avulsoNome.trim(),
+        avulsoQtd,
+        valor
+      );
+      setModalAvulso(false);
+      setAvulsoNome("");
+      setAvulsoValor("");
+      setAvulsoQtd(1);
+      await carregarDados();
+      const pedidosAtualizados = (await getPedidosAbertos()) as unknown as Pedido[];
+      const atualizado = pedidosAtualizados.find(
+        (p) => p.id_pedido === pedidoEditando.id_pedido
+      );
+      if (atualizado) {
+        setPedidoEditando(atualizado);
+        setPedidoDetalhe(atualizado);
+      }
     } catch {
       // erro
     } finally {
@@ -595,6 +635,17 @@ export default function SistemaInternoPage() {
               {formatarCategoria(cat)}
             </button>
           ))}
+          <button
+            onClick={() => {
+              setModalAvulso(true);
+              setAvulsoNome("");
+              setAvulsoValor("");
+              setAvulsoQtd(1);
+            }}
+            className="flex-shrink-0 rounded-full border border-dashed border-primary px-4 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/10"
+          >
+            + Avulso
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
@@ -624,6 +675,19 @@ export default function SistemaInternoPage() {
               ))}
           </div>
         </div>
+
+        <ModalItemAvulso
+          isOpen={modalAvulso}
+          nmProduto={avulsoNome}
+          valor={avulsoValor}
+          quantidade={avulsoQtd}
+          isLoading={actionLoading}
+          onNomeChange={setAvulsoNome}
+          onValorChange={setAvulsoValor}
+          onQuantidadeChange={setAvulsoQtd}
+          onConfirm={handleAdicionarAvulso}
+          onClose={() => setModalAvulso(false)}
+        />
       </div>
     );
   }
@@ -1010,7 +1074,8 @@ export default function SistemaInternoPage() {
                     >
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-foreground">
-                          {item.nr_quantidade}x {item.produtos.nm_produto}
+                          {item.nr_quantidade}x{" "}
+                          {item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item"}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           R${" "}
@@ -1147,12 +1212,13 @@ export default function SistemaInternoPage() {
                       className="flex items-center justify-between rounded-lg border border-border bg-background p-3"
                     >
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-foreground">
-                          {item.nr_quantidade}x {item.produtos.nm_produto}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          R$ {Number(item.vl_unitario).toFixed(2).replace(".", ",")} un.
-                        </p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {item.nr_quantidade}x{" "}
+                        {item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        R$ {Number(item.vl_unitario).toFixed(2).replace(".", ",")} un.
+                      </p>
                       </div>
                       <span className="text-sm font-bold text-primary">
                         R$ {Number(item.vl_subtotal).toFixed(2).replace(".", ",")}
@@ -1183,6 +1249,20 @@ export default function SistemaInternoPage() {
           </div>
         </div>
       )}
+
+      {/* === MODAL: Item Avulso === */}
+      <ModalItemAvulso
+        isOpen={modalAvulso}
+        nmProduto={avulsoNome}
+        valor={avulsoValor}
+        quantidade={avulsoQtd}
+        isLoading={actionLoading}
+        onNomeChange={setAvulsoNome}
+        onValorChange={setAvulsoValor}
+        onQuantidadeChange={setAvulsoQtd}
+        onConfirm={handleAdicionarAvulso}
+        onClose={() => setModalAvulso(false)}
+      />
 
       {/* === IMPRESSAO === */}
       {pedidoParaImprimir && (

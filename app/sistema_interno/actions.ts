@@ -110,6 +110,41 @@ export async function abrirPedidoBalcao(nmCliente: string) {
   return pedido
 }
 
+export async function adicionarItemAvulso(
+  idPedido: string,
+  nmProduto: string,
+  quantidade: number,
+  vlUnitario: number
+) {
+  const supabase = await createClient()
+  const vlSubtotal = quantidade * vlUnitario
+
+  const { error: itemError } = await supabase.from('itens_pedido').insert({
+    id_pedido: idPedido,
+    id_produto: null,
+    nm_produto_avulso: nmProduto,
+    nr_quantidade: quantidade,
+    vl_unitario: vlUnitario,
+    vl_subtotal: vlSubtotal,
+  })
+  if (itemError) throw itemError
+
+  const { data: itens } = await supabase
+    .from('itens_pedido')
+    .select('vl_subtotal')
+    .eq('id_pedido', idPedido)
+
+  const novoTotal = itens?.reduce((acc, item) => acc + Number(item.vl_subtotal), 0) || 0
+
+  const { error: pedidoError } = await supabase
+    .from('pedidos')
+    .update({ vl_total: novoTotal })
+    .eq('id_pedido', idPedido)
+  if (pedidoError) throw pedidoError
+
+  revalidatePath('/sistema_interno')
+}
+
 export async function adicionarItem(
   idPedido: string,
   idProduto: string,
