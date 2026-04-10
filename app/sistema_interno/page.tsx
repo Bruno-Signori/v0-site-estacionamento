@@ -33,9 +33,11 @@ import {
   User,
   ChevronLeft,
   Printer,
+  Settings,
 } from "lucide-react";
 import { PrintReceipt } from "@/components/print-receipt";
 import { ModalItemAvulso } from "@/components/modal-item-avulso";
+import { Configuracoes } from "./configuracoes";
 
 type Mesa = {
   id_mesa: string;
@@ -74,7 +76,7 @@ type Pedido = {
   itens_pedido: ItemPedido[];
 };
 
-type ActiveTab = "mesas" | "pedidos" | "novo" | "relatorio";
+type ActiveTab = "mesas" | "pedidos" | "novo" | "relatorio" | "config";
 
 // Carrinho temporario ao montar pedido
 type CarrinhoItem = {
@@ -727,6 +729,11 @@ export default function SistemaInternoPage() {
               label: "Relatorio",
               icon: BarChart3,
             },
+            {
+              key: "config" as ActiveTab,
+              label: "Config",
+              icon: Settings,
+            },
           ] as const
         ).map((tab) => (
           <button
@@ -1161,6 +1168,9 @@ export default function SistemaInternoPage() {
           </div>
         </div>
       )}
+      {/* === ABA: CONFIGURAÇÕES === */}
+      {activeTab === "config" && <Configuracoes />}
+
       {/* === MODAL: Detalhe do Pedido Fechado (Relatorio) === */}
       {pedidoRelatorioDetalhe && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 sm:items-center sm:p-4">
