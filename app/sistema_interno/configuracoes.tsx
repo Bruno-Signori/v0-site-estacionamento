@@ -52,6 +52,9 @@ export function Configuracoes() {
   const [produtoNome, setProdutoNome] = useState("");
   const [produtoCategoria, setProdutoCategoria] = useState("");
   const [produtoPreco, setProdutoPreco] = useState("");
+  
+  // Filtro de produtos
+  const [filtroProduto, setFiltroProduto] = useState("");
 
   useEffect(() => {
     carregarDados();
@@ -259,8 +262,23 @@ export function Configuracoes() {
                 Novo Produto
               </Button>
             </div>
+            
+            {/* Filtro por nome */}
+            <div className="mb-4">
+              <Input
+                value={filtroProduto}
+                onChange={(e) => setFiltroProduto(e.target.value)}
+                placeholder="Filtrar por nome do produto..."
+                className="w-full"
+              />
+            </div>
+
             <div className="flex flex-col gap-2">
-              {produtos.map((prod) => (
+              {produtos
+                .filter((prod) =>
+                  prod.nm_produto.toLowerCase().includes(filtroProduto.toLowerCase())
+                )
+                .map((prod) => (
                 <div
                   key={prod.id_produto}
                   className="flex items-center justify-between rounded-lg border border-border bg-card p-4"
