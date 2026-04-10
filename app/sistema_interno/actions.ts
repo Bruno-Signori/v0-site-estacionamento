@@ -251,6 +251,110 @@ export async function cancelarPedido(idPedido: string, idMesa: string | null) {
   revalidatePath('/sistema_interno')
 }
 
+// ---- CATEGORIAS ----
+export async function getCategorias() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('categorias')
+    .select('*')
+    .eq('id_ativo', true)
+    .order('nm_categoria')
+  if (error) throw error
+  return data
+}
+
+export async function criarCategoria(nmCategoria: string, dsDescricao?: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('categorias')
+    .insert({
+      nm_categoria: nmCategoria,
+      ds_descricao: dsDescricao || null,
+    })
+    .select()
+    .single()
+  if (error) throw error
+  revalidatePath('/sistema_interno')
+  return data
+}
+
+export async function atualizarCategoria(
+  idCategoria: string,
+  nmCategoria: string,
+  dsDescricao?: string
+) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('categorias')
+    .update({
+      nm_categoria: nmCategoria,
+      ds_descricao: dsDescricao || null,
+    })
+    .eq('id_categoria', idCategoria)
+  if (error) throw error
+  revalidatePath('/sistema_interno')
+}
+
+export async function desativarCategoria(idCategoria: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('categorias')
+    .update({ id_ativo: false })
+    .eq('id_categoria', idCategoria)
+  if (error) throw error
+  revalidatePath('/sistema_interno')
+}
+
+// ---- PRODUTOS (CRUD) ----
+export async function criarProduto(
+  nmProduto: string,
+  dsCategoria: string,
+  vlPreco: number
+) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('produtos')
+    .insert({
+      nm_produto: nmProduto,
+      ds_categoria: dsCategoria,
+      vl_preco: vlPreco,
+    })
+    .select()
+    .single()
+  if (error) throw error
+  revalidatePath('/sistema_interno')
+  return data
+}
+
+export async function atualizarProduto(
+  idProduto: string,
+  nmProduto: string,
+  dsCategoria: string,
+  vlPreco: number
+) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('produtos')
+    .update({
+      nm_produto: nmProduto,
+      ds_categoria: dsCategoria,
+      vl_preco: vlPreco,
+    })
+    .eq('id_produto', idProduto)
+  if (error) throw error
+  revalidatePath('/sistema_interno')
+}
+
+export async function desativarProduto(idProduto: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('produtos')
+    .update({ id_ativo: false })
+    .eq('id_produto', idProduto)
+  if (error) throw error
+  revalidatePath('/sistema_interno')
+}
+
 // ---- AUTH ----
 export async function logout() {
   const supabase = await createClient()
