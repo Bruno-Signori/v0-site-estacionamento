@@ -32,202 +32,122 @@ type PrintReceiptProps = {
 };
 
 export function PrintReceipt({ pedido, onClose }: PrintReceiptProps) {
-  const titulo = pedido.mesas
-    ? `Mesa ${pedido.mesas.nr_mesa}`
-    : pedido.nm_cliente || "Balcao";
-
-  const dataFormatada = new Date(pedido.dh_abertura).toLocaleDateString(
-    "pt-BR"
-  );
-  const horaFormatada = new Date(pedido.dh_abertura).toLocaleTimeString(
-    "pt-BR",
-    { hour: "2-digit", minute: "2-digit" }
-  );
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      window.print();
-    }, 200);
-    const handleAfterPrint = () => {
+    const titulo = pedido.mesas
+      ? `Mesa ${pedido.mesas.nr_mesa}`
+      : pedido.nm_cliente || "Balcao";
+
+    const dataFormatada = new Date(pedido.dh_abertura).toLocaleDateString("pt-BR");
+    const horaFormatada = new Date(pedido.dh_abertura).toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const itensHtml = pedido.itens_pedido
+      .map((item) => {
+        const nome = item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item";
+        const subtotal = Number(item.vl_subtotal).toFixed(2).replace(".", ",");
+        const unitario = Number(item.vl_unitario).toFixed(2).replace(".", ",");
+        return `
+          <div style="margin-bottom:3mm;">
+            <div style="display:flex;justify-content:space-between;">
+              <span>${item.nr_quantidade}x ${nome}</span>
+              <span>R$ ${subtotal}</span>
+            </div>
+            <div style="font-size:10px;color:#555;padding-left:4mm;">un. R$ ${unitario}</div>
+          </div>`;
+      })
+      .join("");
+
+    const obsHtml = pedido.ds_observacoes
+      ? `<div style="border-top:1px dashed #000;padding-top:2mm;margin-bottom:4mm;font-size:11px;">
+           <div style="font-weight:bold;">Obs:</div>
+           <div>${pedido.ds_observacoes}</div>
+         </div>`
+      : "";
+
+    const clienteHtml =
+      pedido.mesas && pedido.nm_cliente
+        ? `<div style="font-size:11px;font-weight:normal;">${pedido.nm_cliente}</div>`
+        : "";
+
+    const total = Number(pedido.vl_total).toFixed(2).replace(".", ",");
+
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Cupom</title>
+  <style>
+    @page { size: 58mm auto; margin: 2mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: monospace;
+      font-size: 12px;
+      width: 54mm;
+      margin: 0;
+      padding: 0;
+      color: #000;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align:center;margin-bottom:4mm;">
+    <div style="font-size:16px;font-weight:bold;letter-spacing:1px;">FITTIPALDI</div>
+    <div style="font-size:11px;">Estacionamento</div>
+    <div style="border-top:1px dashed #000;margin-top:3mm;padding-top:2mm;font-size:11px;">
+      ${dataFormatada} ${horaFormatada}
+    </div>
+  </div>
+
+  <div style="border-top:1px dashed #000;border-bottom:1px dashed #000;padding:2mm 0;margin-bottom:3mm;text-align:center;font-weight:bold;font-size:13px;">
+    ${titulo}
+    ${clienteHtml}
+  </div>
+
+  <div style="margin-bottom:3mm;">
+    ${itensHtml}
+  </div>
+
+  <div style="border-top:1px dashed #000;padding-top:2mm;margin-bottom:4mm;">
+    <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:14px;">
+      <span>TOTAL</span>
+      <span>R$ ${total}</span>
+    </div>
+  </div>
+
+  ${obsHtml}
+
+  <div style="border-top:1px dashed #000;padding-top:2mm;text-align:center;font-size:10px;">
+    Obrigado pela preferencia!
+  </div>
+</body>
+</html>`;
+
+    const win = window.open("", "_blank", "width=300,height=600");
+    if (!win) {
+      onClose();
+      return;
+    }
+
+    win.document.write(html);
+    win.document.close();
+
+    win.onafterprint = () => {
+      win.close();
       onClose();
     };
-    window.addEventListener("afterprint", handleAfterPrint);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("afterprint", handleAfterPrint);
+
+    // Aguarda o conteudo carregar antes de imprimir
+    win.onload = () => {
+      setTimeout(() => {
+        win.focus();
+        win.print();
+      }, 150);
     };
-  }, [onClose]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return (
-    <>
-      {/* Estilos de impressao injetados dinamicamente */}
-      <style>{`
-        @page {
-          size: 58mm auto;
-          margin: 0;
-        }
-        @media print {
-          html, body {
-            width: 58mm !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            background: white !important;
-          }
-          body > *:not(#print-receipt) {
-            display: none !important;
-            visibility: hidden !important;
-          }
-          #print-receipt {
-            display: block !important;
-            visibility: visible !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 58mm !important;
-            background: white !important;
-            page-break-after: avoid !important;
-            break-after: avoid !important;
-          }
-          #print-receipt * {
-            visibility: visible !important;
-          }
-        }
-        @media screen {
-          #print-receipt {
-            display: none;
-          }
-        }
-      `}</style>
-
-      <div id="print-receipt">
-        <div
-          style={{
-            fontFamily: "monospace",
-            fontSize: "12px",
-            width: "58mm",
-            margin: "0 auto",
-            padding: "4mm 2mm",
-            color: "#000",
-            background: "#fff",
-          }}
-        >
-          {/* Cabecalho */}
-          <div style={{ textAlign: "center", marginBottom: "4mm" }}>
-            <div
-              style={{
-                fontSize: "16px",
-                fontWeight: "bold",
-                letterSpacing: "1px",
-              }}
-            >
-              FITTIPALDI
-            </div>
-            <div style={{ fontSize: "11px" }}>Estacionamento</div>
-            <div
-              style={{
-                borderTop: "1px dashed #000",
-                marginTop: "3mm",
-                paddingTop: "2mm",
-                fontSize: "11px",
-              }}
-            >
-              {dataFormatada} {horaFormatada}
-            </div>
-          </div>
-
-          {/* Identificacao */}
-          <div
-            style={{
-              borderTop: "1px dashed #000",
-              borderBottom: "1px dashed #000",
-              padding: "2mm 0",
-              marginBottom: "3mm",
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: "13px",
-            }}
-          >
-            {titulo}
-            {pedido.mesas && pedido.nm_cliente && (
-              <div style={{ fontSize: "11px", fontWeight: "normal" }}>
-                {pedido.nm_cliente}
-              </div>
-            )}
-          </div>
-
-          {/* Itens */}
-          <div style={{ marginBottom: "3mm" }}>
-            {pedido.itens_pedido.map((item) => (
-              <div
-                key={item.id_item}
-                style={{ marginBottom: "2mm" }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span>
-                    {item.nr_quantidade}x{" "}
-                    {item.produtos?.nm_produto ?? item.nm_produto_avulso ?? "Item"}
-                  </span>
-                  <span>
-                    R${" "}
-                    {Number(item.vl_subtotal).toFixed(2).replace(".", ",")}
-                  </span>
-                </div>
-                <div style={{ fontSize: "10px", color: "#555", paddingLeft: "4mm" }}>
-                  un. R$ {Number(item.vl_unitario).toFixed(2).replace(".", ",")}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Total */}
-          <div
-            style={{
-              borderTop: "1px dashed #000",
-              paddingTop: "2mm",
-              marginBottom: "4mm",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontWeight: "bold",
-                fontSize: "14px",
-              }}
-            >
-              <span>TOTAL</span>
-              <span>R$ {Number(pedido.vl_total).toFixed(2).replace(".", ",")}</span>
-            </div>
-          </div>
-
-          {/* Observacoes */}
-          {pedido.ds_observacoes && (
-            <div
-              style={{
-                borderTop: "1px dashed #000",
-                paddingTop: "2mm",
-                marginBottom: "4mm",
-                fontSize: "11px",
-              }}
-            >
-              <div style={{ fontWeight: "bold" }}>Obs:</div>
-              <div>{pedido.ds_observacoes}</div>
-            </div>
-          )}
-
-          {/* Rodape */}
-          <div
-            style={{
-              borderTop: "1px dashed #000",
-              paddingTop: "2mm",
-              textAlign: "center",
-              fontSize: "10px",
-            }}
-          >
-            Obrigado pela preferencia!
-          </div>
-        </div>
-      </div>
-    </>
-  );
+  return null;
 }
