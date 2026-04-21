@@ -62,16 +62,34 @@ export function PrintReceipt({ pedido, onClose }: PrintReceiptProps) {
     <>
       {/* Estilos de impressao injetados dinamicamente */}
       <style>{`
+        @page {
+          size: 58mm auto;
+          margin: 0;
+        }
         @media print {
+          html, body {
+            width: 58mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+          }
           body > *:not(#print-receipt) {
             display: none !important;
+            visibility: hidden !important;
           }
           #print-receipt {
             display: block !important;
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: white;
+            visibility: visible !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 58mm !important;
+            background: white !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+          }
+          #print-receipt * {
+            visibility: visible !important;
           }
         }
         @media screen {
