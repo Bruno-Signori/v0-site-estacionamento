@@ -26,11 +26,11 @@ interface Item {
 }
 
 const pasteis: Item[] = [
-  { id: "p1", nome: "Carne", preco: 9.0 },
+  { id: "p1", nome: "Carne", preco: 10.0 },
   { id: "p2", nome: "Frango", preco: 10.0 },
   { id: "p3", nome: "Carne e Queijo", preco: 10.0 },
   { id: "p4", nome: "Queijo", preco: 11.0 },
-  { id: "p5", nome: "Queijo e Presunto", preco: 10.0 },
+  { id: "p5", nome: "Queijo e Presunto", preco: 11.0 },
   { id: "p6", nome: "Chocolate Preto", preco: 11.0 },
   { id: "p7", nome: "Chocolate Branco", preco: 11.0 },
   { id: "p8", nome: "Chocolate Misto", preco: 11.0 },
@@ -44,18 +44,22 @@ const xis: Item[] = [
 
 const torradas: Item[] = [{ id: "t1", nome: "Torrada Completa", preco: 10.0 }]
 
-const paesDeQueijo: Item[] = [{ id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 }]
+const paesDeQueijo: Item[] = [
+  { id: "pq1", nome: "Pão de Queijo (unidade)", preco: 5.0 },
+  { id: "pq2", nome: "Pão de Queijo Recheado", preco: 7.0 }
+]
 
 const bebidas: Item[] = [
   { id: "b1", nome: "Café", preco: 5.0 },
-  { id: "b2", nome: "Café com Leite", preco: 5.0 },
-  { id: "b3", nome: "Coca 220ml", preco: 4.0 },
-  { id: "b4", nome: "Coca 350ml", preco: 6.0 },
-  { id: "b5", nome: "Coca 600ml", preco: 8.0 },
+  { id: "b2", nome: "Café com Leite", preco: 6.0 },
+  { id: "b3", nome: "Coca 220ml", preco: 5.0 },
+  { id: "b4", nome: "Coca 350ml", preco: 7.0 },
+  { id: "b5", nome: "Coca 600ml", preco: 9.0 },
   { id: "b6", nome: "Coca 2L", preco: 15.0 },
   { id: "b7", nome: "Energetico Monster", preco: 13.0 },
   { id: "b8", nome: "Red Bull", preco: 13.0 },
-  { id: "b9", nome: "Gatorade", preco: 9.0 },
+  { id: "b9", nome: "Gatorade", preco: 10.0 },
+  { id: "b10", nome: "Agua", preco: 4.0 },
 ]
 
 const diversos: Item[] = [
@@ -74,14 +78,14 @@ const diversos: Item[] = [
   { id: "d12", nome: "Kinder Bueno", preco: 10.0 },
 
   // Salgadinhos
-  { id: "d13", nome: "Doritos", preco: 12.0 },
-  { id: "d14", nome: "Ruffles", preco: 12.0 },
-  { id: "d15", nome: "Fandangos", preco: 12.0 },
-  { id: "d16", nome: "Cheetos Assado", preco: 12.0 },
-  { id: "d17", nome: "Baconzitos", preco: 12.0 },
-  { id: "d18", nome: "Cebolitos", preco: 12.0 },
-  { id: "d19", nome: "Stiksy", preco: 12.0 },
-  { id: "d20", nome: "Pingo d’Ouro", preco: 12.0 },
+  { id: "d13", nome: "Doritos", preco: 13.0 },
+  { id: "d14", nome: "Ruffles", preco: 13.0 },
+  { id: "d15", nome: "Fandangos", preco: 13.0 },
+  { id: "d16", nome: "Cheetos Assado", preco: 13.0 },
+  { id: "d17", nome: "Baconzitos", preco: 13.0 },
+  { id: "d18", nome: "Cebolitos", preco: 13.0 },
+  { id: "d19", nome: "Stiksy", preco: 13.0 },
+  { id: "d20", nome: "Pingo d’Ouro", preco: 13.0 },
   { id: "d21", nome: "Takis", preco: 10.0 },
   { id: "d22", nome: "Crocantíssimo", preco: 8.0 },
 

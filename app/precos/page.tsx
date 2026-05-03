@@ -9,7 +9,7 @@ export default function Precos() {
       tipo: "CARRO",
       icone: Car,
       precos: [
-        { label: "1° Hora", valor: "R$ 8,00" },
+        { label: "1° Hora", valor: "R$ 9,00" },
         { label: "Demais Horas", valor: "R$ 8,00" },
         { label: "Diária", valor: "R$ 60,00" },
       ],
