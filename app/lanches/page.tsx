@@ -28,7 +28,7 @@ interface Item {
 const pasteis: Item[] = [
   { id: "p1", nome: "Carne", preco: 10.0 },
   { id: "p2", nome: "Frango", preco: 10.0 },
-  { id: "p3", nome: "Carne e Queijo", preco: 10.0 },
+  { id: "p3", nome: "Carne e Queijo", preco: 11.0 },
   { id: "p4", nome: "Queijo", preco: 11.0 },
   { id: "p5", nome: "Queijo e Presunto", preco: 11.0 },
   { id: "p6", nome: "Chocolate Preto", preco: 11.0 },
@@ -120,9 +120,8 @@ function ItemList({
         return (
           <div
             key={item.id}
-            className={`p-4 rounded-xl border-2 transition-all ${
-              selecionado ? "bg-primary/10 border-primary" : "bg-card border-border hover:border-primary/50"
-            }`}
+            className={`p-4 rounded-xl border-2 transition-all ${selecionado ? "bg-primary/10 border-primary" : "bg-card border-border hover:border-primary/50"
+              }`}
           >
             <div className="flex items-center justify-between">
               <div>
@@ -224,11 +223,10 @@ export default function Lanches() {
           <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-8 h-auto gap-3 bg-transparent p-0">
             <TabsTrigger
               value="pasteis"
-              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
-                activeTab === "pasteis"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${activeTab === "pasteis"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
-              }`}
+                }`}
             >
               <Pizza className="h-5 w-5 mb-1" />
               <span className="truncate">Pastéis</span>
@@ -236,44 +234,40 @@ export default function Lanches() {
 
             <TabsTrigger
               value="xis"
-              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
-                activeTab === "xis"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${activeTab === "xis"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
-              }`}
+                }`}
             >
               <Sandwich className="h-5 w-5 mb-1" />
               <span className="truncate text-xs">Xis e Burgers</span>
             </TabsTrigger>
             <TabsTrigger
               value="torradas"
-              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
-                activeTab === "torradas"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${activeTab === "torradas"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
-              }`}
+                }`}
             >
               <Cookie className="h-5 w-5 mb-1" />
               <span className="truncate">Torradas</span>
             </TabsTrigger>
             <TabsTrigger
               value="pao"
-              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
-                activeTab === "pao"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${activeTab === "pao"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
-              }`}
+                }`}
             >
               <Cookie className="h-5 w-5 mb-1" />
               <span className="truncate">Pão Queijo</span>
             </TabsTrigger>
             <TabsTrigger
               value="bebidas"
-              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
-                activeTab === "bebidas"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${activeTab === "bebidas"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
-              }`}
+                }`}
             >
               <Coffee className="h-5 w-5 mb-1" />
               <span className="truncate">Bebidas</span>
@@ -281,11 +275,10 @@ export default function Lanches() {
 
             <TabsTrigger
               value="diversos"
-              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${
-                activeTab === "diversos"
+              className={`text-xs sm:text-sm py-4 px-3 rounded-lg border-2 transition-all font-semibold flex flex-col items-center justify-center ${activeTab === "diversos"
                   ? "border-primary border-4 text-primary bg-transparent"
                   : "bg-card border-border text-foreground hover:border-primary/50"
-              }`}
+                }`}
             >
               <UtensilsCrossed className="h-5 w-5 mb-1" />
               <span className="truncate">Diversos</span>
