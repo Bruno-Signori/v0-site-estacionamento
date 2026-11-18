@@ -12,19 +12,18 @@ export async function updateSession(request: NextRequest) {
     })
   }
 
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
-
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('[v0] Missing Supabase environment variables')
     return NextResponse.next({
       request,
     })
   }
+
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
 
   // With Fluid compute, don't put this client in a global environment
   // variable. Always create a new one on each request.
